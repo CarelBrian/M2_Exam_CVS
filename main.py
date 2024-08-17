@@ -36,7 +36,7 @@ def create_remote_repo():
 
 # Push au dépôt distant
 def push_to_remote():
-    subprocess.run(["git", "remote", "add", "origin", "https://github.com/CarelBrian/ExoOVersioning.git"], check=True)
+    subprocess.run(["git", "remote", "add", "origin", "https://github.com/CarelBrian/M2_Exam_CVS.git"], check=True)
     subprocess.run(["git", "push", "-u", "origin", "master"], check=True)
 
 # Fonction main pour appeler toutes les fonctions précédentes
