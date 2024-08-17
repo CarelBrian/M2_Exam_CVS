@@ -1,5 +1,7 @@
 import os
 import subprocess
+import requests
+import json
 
 # Création du dépôt git
 def initialize_git_repo():
@@ -12,24 +14,25 @@ def add_and_commit_files():
 
 # Création du dépôt distant
 def create_remote_repo():
-    # Récupérer le token GitHub à partir des secrets
     GITHUB_TOKEN = os.getenv('GITHUB_ACCESS_TOKEN')
     if not GITHUB_TOKEN:
         raise ValueError("Le token GitHub n'est pas défini dans l'environnement.")
-    
-    # Appeler l'API GitHub pour créer le dépôt
-    result = subprocess.run([
-        "curl",
-        "-u",
-        f"CarelBrian:{GITHUB_TOKEN}",
-        "https://api.github.com/user/repos",
-        "-d",
-        '{"name":"M2_Exam_CVS"}'
-    ], capture_output=True, text=True)
 
-    if result.returncode != 0:
-        raise RuntimeError(f"Erreur lors de la création du dépôt distant : {result.stderr}")
-    print("Dépôt distant créé avec succès.")
+    url = "https://api.github.com/user/repos"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "name": "M2_Exam_CVS"
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    if response.status_code == 201:
+        print("Dépôt distant créé avec succès.")
+    else:
+        raise RuntimeError(f"Erreur lors de la création du dépôt distant : {response.status_code} {response.text}")
 
 # Push au dépôt distant
 def push_to_remote():
